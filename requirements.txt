@@ -3,3 +3,5 @@ flask-cors
 selenium
 webdriver-manager
 gunicorn
+requests
+beautifulsoup4
