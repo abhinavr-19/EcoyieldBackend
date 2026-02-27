@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -62,9 +62,23 @@ def home():
 @app.route("/api/prices", methods=["GET"])
 def get_prices():
     data = scrape_enam()
+    
+    # Get search parameter from query string
+    search_query = request.args.get("search", "").strip().lower()
+    
+    # Filter data if search query is provided
+    if search_query:
+        filtered_data = [
+            item for item in data 
+            if search_query in item["commodity"].lower()
+        ]
+    else:
+        filtered_data = data
+    
     return jsonify({
-        "total_records": len(data),
-        "data": data
+        "total_records": len(filtered_data),
+        "search_query": search_query if search_query else None,
+        "data": filtered_data
     })
 
 
